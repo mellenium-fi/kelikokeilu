@@ -89,7 +89,44 @@
     </div>
   </div>
 
+<script>
+  const apiUrl = 'https://ypz15mr9e8.execute-api.eu-west-1.amazonaws.com/dev/read?SiteID=1274';
 
+  fetch(apiUrl, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': 'uwGUXamNWM7SPb6MDK7cb5Kf85BIQ0o41sOAVAnc'
+    }
+  })
+  .then(response => {
+    if (!response.ok) throw new Error('API request failed');
+    return response.json();
+  })
+  .then(data => {
+    const { CurrentTime, ForecastTime, Condition } = data;
+
+    const html = `
+      <div class="entity">
+        <div class="entity-title">Entity: ${data.EntityName || 'Unknown'}</div>
+        <div class="data-row"><span class="label">Forecast creation time:</span> <span>${FetchedAt}</span></div>
+        <div class="data-row"><span class="label">Forecast time:</span> <span>${ForecastTime}</span></div>
+        <div class="data-row"><span class="label">Road condition:</span> <span>${d4}</span></div>
+      </div>
+    `;
+
+    document.getElementById('data-container').innerHTML = html;
+  })
+  .catch(error => {
+    document.getElementById('data-container').innerHTML = `<p style="color: red;">Failed to load data: ${error.message}</p>`;
+  });
+</script>
+
+
+
+
+
+<!-- Old rest api
 <script>
   const apiUrl = 'https://qyse0liqlj.execute-api.eu-west-1.amazonaws.com/dev/read?entity=203';
 
@@ -122,7 +159,7 @@
     document.getElementById('data-container').innerHTML = `<p style="color: red;">Failed to load data: ${error.message}</p>`;
   });
 </script>
-
+-->
 
   <!-- old for HTTP api
   <script>
