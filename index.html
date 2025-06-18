@@ -104,7 +104,7 @@
     return response.json();
   })
   .then(data => {
-    const { CurrentTime, ForecastTime, Condition } = data;
+    const { FetchedAt, ForecastTime, Condition } = data;
 
     const html = `
       <div class="entity">
