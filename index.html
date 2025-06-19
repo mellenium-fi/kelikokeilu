@@ -55,6 +55,23 @@
       font-weight: bold;
       margin-right: 10px;
     }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+
+    th, td {
+      padding: 8px;
+      border: 1px solid #ccc;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f9f9f9;
+    }
   </style>
 </head>
 <body>
@@ -65,22 +82,9 @@
   </div>
 
 
-
-
   <div class="bottom-section">
-    <div class="left-panel" id="data-container">
-      <!-- Entities and data rows will go here -->
-      <div class="entity">
-        <div class="entity-title">Location 1</div>
-        <div class="data-row"><span class="label">Forecast creation time:</span> <span>No data</span></div>
-        <div class="data-row"><span class="label">Forecast time:</span> <span>No data</span></div>
-        <div class="data-row"><span class="label">Road condition:</span> <span>No data</span></div>
-      </div>
-
-
-      <!-- Repeat for other entities -->
-    </div>
-
+    <div class="left-panel" id="data-container"></div>
+    
     <div class="right-panel">
       <iframe src="https://www.google.com/maps/d/embed?mid=1heOFnKgYLi9tWZ3-ihJM076qHRD94iU&ehbc=2E312F" width="640" height="480"></iframe>
       <!--
@@ -89,115 +93,97 @@
     </div>
   </div>
 
-<!-- current -->
 <script>
-  const apiUrl = 'https://ypz15mr9e8.execute-api.eu-west-1.amazonaws.com/dev/read?SiteID=1274';
+  const siteMap = {
+    "1270": "Keilaniemi",
+    "1271": "Matinkylä",
+    "1273": "Merituulentie",
+    "1274": "Tapiola"
+  };
 
-  fetch(apiUrl, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': 'uwGUXamNWM7SPb6MDK7cb5Kf85BIQ0o41sOAVAnc'
+  const siteIDs = Object.keys(siteMap);
+
+  const apiBaseUrl = 'https://ypz15mr9e8.execute-api.eu-west-1.amazonaws.com/dev/read';
+  const apiKey = 'uwGUXamNWM7SPb6MDK7cb5Kf85BIQ0o41sOAVAnc';
+
+  function formatDateTime(isoString, timeZone = 'Europe/Helsinki') {
+    const date = new Date(isoString);
+    return date.toLocaleString('en-GB', {
+      timeZone,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  }
+
+  function round(value) {
+    return typeof value === 'number' ? Math.round(value) : value;
+  }
+
+  async function fetchSiteData(siteID) {
+    const url = `${apiBaseUrl}?SiteID=${siteID}`;
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey
+      }
+    });
+
+    const data = await response.json();
+    return data[0];
+  }
+
+  async function fetchAllSites() {
+    const allData = [];
+
+    for (const siteID of siteIDs) {
+      try {
+        const data = await fetchSiteData(siteID);
+        allData.push(data);
+      } catch (error) {
+        console.error(`Failed to load data for SiteID ${siteID}:`, error);
+      }
     }
-  })
 
-  .then(response => {
-    if (!response.ok) throw new Error('API request failed');
-    return response.json();
-  })
+    return allData;
+  }
 
-  .then(data => {
-    console.log('Parsed JSON:', data);
+  function renderTable(dataArray) {
+    const columns = [
+      { key: 'SiteID', label: 'Site Name', transform: (val) => siteMap[val] || val },
+      { key: 'ForecastTime', label: 'Forecast Time', transform: (val) => formatDateTime(val) },
+      { key: 'd4', label: 'Road Condition Code', transform: round },
+      { key: 'd1', label: 'Air Temperature', transform: round },
+      { key: 'd5', label: 'Road Temperature', transform: round },
+      { key: 'd10', label: 'Humidity', transform: round },
+      { key: 'd18', label: 'Water layer', transform: round }
+    ];
 
-    if (!Array.isArray(data) || data.length === 0) {
-      throw new Error('No data received');
-    }
+    let tableHTML = `<table>
+      <thead><tr>${columns.map(col => `<th>${col.label}</th>`).join('')}</tr></thead>
+      <tbody>
+        ${dataArray.map(site => `
+          <tr>
+            ${columns.map(col => {
+              const raw = site[col.key];
+              const display = col.transform ? col.transform(raw) : raw;
+              return `<td>${display != null ? display : '-'}</td>`;
+            }).join('')}
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>`;
 
-    const item = data[0];
-    const { SiteID, FetchedAt, ForecastTime, d4 } = item;
+    document.getElementById('data-container').innerHTML = tableHTML;
+  }
 
-    const html = `
-      <div class="entity">
-        <div class="entity-title">SiteID: ${SiteID || 'Unknown'}</div>
-        <div class="data-row"><span class="label">Forecast creation time:</span> <span>${FetchedAt}</span></div>
-        <div class="data-row"><span class="label">Forecast time:</span> <span>${ForecastTime}</span></div>
-        <div class="data-row"><span class="label">Road condition:</span> <span>${d4}</span></div>
-      </div>
-    `;
-
-    document.getElementById('data-container').innerHTML = html;
-  })
-  .catch(error => {
-    document.getElementById('data-container').innerHTML = `<p style="color: red;">Failed to load data: ${error.message}</p>`;
-  });
+  // Load and render data
+  fetchAllSites().then(renderTable);
 </script>
 
-
-
-
-<!-- Old rest api
-<script>
-  const apiUrl = 'https://qyse0liqlj.execute-api.eu-west-1.amazonaws.com/dev/read?entity=203';
-
-  fetch(apiUrl, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': 'cf0FLsZXRU7HNI2ExOVIa33lIhwcbcT898ZRNSQy'
-    }
-  })
-  .then(response => {
-    if (!response.ok) throw new Error('API request failed');
-    return response.json();
-  })
-  .then(data => {
-    const { CurrentTime, ForecastTime, Condition } = data;
-
-    const html = `
-      <div class="entity">
-        <div class="entity-title">Entity: ${data.EntityName || 'Unknown'}</div>
-        <div class="data-row"><span class="label">Forecast creation time:</span> <span>${CurrentTime}</span></div>
-        <div class="data-row"><span class="label">Forecast time:</span> <span>${ForecastTime}</span></div>
-        <div class="data-row"><span class="label">Road condition:</span> <span>${Condition}</span></div>
-      </div>
-    `;
-
-    document.getElementById('data-container').innerHTML = html;
-  })
-  .catch(error => {
-    document.getElementById('data-container').innerHTML = `<p style="color: red;">Failed to load data: ${error.message}</p>`;
-  });
-</script>
-
-  <!-- old for HTTP api
-  <script>
-    const apiUrl = 'https://oeuvdcxyte.execute-api.eu-west-1.amazonaws.com/Read?entity=203';
-
-    fetch(apiUrl)
-      .then(response => {
-        if (!response.ok) throw new Error('API request failed');
-        return response.json();
-      })
-      .then(data => {
-        const { CurrentTime, ForecastTime, Condition } = data;
-
-        // Build HTML content dynamically
-        const html = `
-          <div class="entity">
-            <div class="entity-title">Entity: ${data.EntityName || 'Unknown'}</div>
-            <div class="data-row"><span class="label">Forecast creation time:</span> <span>${CurrentTime}</span></div>
-            <div class="data-row"><span class="label">Forecast Time:</span> <span>${ForecastTime}</span></div>
-            <div class="data-row"><span class="label">Road condition:</span> <span>${Condition}</span></div>
-          </div>
-      `   ;
-
-        document.getElementById('data-container').innerHTML = html;
-      })
-      .catch(error => {
-        document.getElementById('data-container').innerHTML = `<p style="color: red;">Failed to load data: ${error.message}</p>`;
-      });
-  </script>
-  -->
 
 
 </body>
