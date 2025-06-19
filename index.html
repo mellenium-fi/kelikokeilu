@@ -106,6 +106,33 @@
   const apiBaseUrl = 'https://ypz15mr9e8.execute-api.eu-west-1.amazonaws.com/dev/read';
   const apiKey = 'uwGUXamNWM7SPb6MDK7cb5Kf85BIQ0o41sOAVAnc';
 
+  function formatDateTime2(input, timeZone = 'Europe/Helsinki') {
+    let date;
+
+    if (typeof input === 'string' && input.includes('T')) {
+      // ISO 8601 format (e.g., FetchedAt)
+      date = new Date(input);
+    } else if (!isNaN(input)) {
+      // Numeric timestamp (likely in seconds)
+      const timestamp = Number(input);
+      date = new Date(timestamp < 1e12 ? timestamp * 1000 : timestamp); // adjust if in seconds
+    } else {
+      return 'Invalid time';
+    }
+
+    return date.toLocaleString('en-GB', {
+      timeZone,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  }
+
+
+
+
   function formatDateTime(isoString, timeZone = 'Europe/Helsinki') {
     const date = new Date(isoString);
     return date.toLocaleString('en-GB', {
@@ -154,7 +181,7 @@
   function renderTable(dataArray) {
     const columns = [
       { key: 'SiteID', label: 'Site Name', transform: (val) => siteMap[val] || val },
-      { key: 'ForecastTime', label: 'Forecast Time', transform: (val) => formatDateTime(val) },
+      { key: 'ForecastTime', label: 'Forecast Time', transform: (val) => formatDateTime2(val) },
       { key: 'd4', label: 'Road Condition Code', transform: round },
       { key: 'd1', label: 'Air Temperature', transform: round },
       { key: 'd5', label: 'Road Temperature', transform: round },
