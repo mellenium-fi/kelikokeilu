@@ -100,6 +100,16 @@
       'x-api-key': 'uwGUXamNWM7SPb6MDK7cb5Kf85BIQ0o41sOAVAnc'
     }
   })
+
+  .then(async response => {
+    const text = await response.text();
+    console.log('Raw response:', text);
+    if (!response.ok) throw new Error('API request failed');
+    return JSON.parse(text);
+  })
+
+
+
   .then(response => {
     if (!response.ok) throw new Error('API request failed');
     return response.json();
@@ -109,7 +119,7 @@
 
     const html = `
       <div class="entity">
-        <div class="entity-title">Entity: ${data.SiteID || 'Unknown'}</div>
+        <div class="entity-title">SiteID: ${data.SiteID || 'Unknown'}</div>
         <div class="data-row"><span class="label">Forecast creation time:</span> <span>${FetchedAt}</span></div>
         <div class="data-row"><span class="label">Forecast time:</span> <span>${ForecastTime}</span></div>
         <div class="data-row"><span class="label">Road condition:</span> <span>${d4}</span></div>
