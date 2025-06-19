@@ -8,28 +8,26 @@
     body {
       margin: 0;
       font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
     }
 
     .top-section {
-      height: 25vh;
+      flex: 0 0 20vh;
       padding: 20px;
       background-color: #f0f0f0;
     }
 
-    .bottom-section {
-      display: flex;
-      height: 75vh;
-    }
-
-    .left-panel {
+    .middle-section {
       flex: 1;
       padding: 20px;
       overflow-y: auto;
       background-color: #ffffff;
     }
 
-    .right-panel {
-      flex: 1;
+    .bottom-section {
+      flex: 0 0 40vh;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -81,16 +79,15 @@
     <p>Basic information will be here, updated</p>
   </div>
 
+  <div class="middle-section" id="data-container">
+    <!-- Dynamic content table will be injected here -->
+  </div>
 
   <div class="bottom-section">
-    <div class="left-panel" id="data-container"></div>
-    
-    <div class="right-panel">
-      <iframe src="https://www.google.com/maps/d/embed?mid=1heOFnKgYLi9tWZ3-ihJM076qHRD94iU&ehbc=2E312F" width="640" height="480"></iframe>
+    <iframe src="https://www.google.com/maps/d/embed?mid=1heOFnKgYLi9tWZ3-ihJM076qHRD94iU&ehbc=2E312F" width="640" height="480"></iframe>
       <!--
       <img src="images/laku.jpeg" alt="Static Display" style="max-width: 100%; max-height: 100%;" />
       -->
-    </div>
   </div>
 
 <script>
