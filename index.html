@@ -23,7 +23,7 @@
     }
 
     .middle-section {
-      flex: 0 1 auto;
+      flex: 1;
       padding: 1.5em;
       background-color: #ffffff;
       overflow-x: auto;
@@ -37,25 +37,13 @@
       align-items: center;
     }
 
-    /* Aspect-ratio wrapper for iframe or image */
-    .aspect-ratio-box {
-      position: relative;
+    .bottom-section iframe,
+    .bottom-section img {
       width: 100%;
       max-width: 1000px;
-      aspect-ratio: 4 / 3;
-    }
-
-    .aspect-ratio-box iframe,
-    .aspect-ratio-box img {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      height: 300px;
       border: none;
-      object-fit: cover;
     }
-
 
     /* Table styling */
     table {
@@ -104,9 +92,7 @@
   </div>
 
   <div class="bottom-section">
-    <div class="aspect-ratio-box">
-      <iframe src="https://www.google.com/maps/d/embed?mid=1heOFnKgYLi9tWZ3-ihJM076qHRD94iU&ehbc=2E312F" width="640" height="480"></iframe>
-    </div>
+    <iframe src="https://www.google.com/maps/d/embed?mid=1heOFnKgYLi9tWZ3-ihJM076qHRD94iU&ehbc=2E312F" width="640" height="480"></iframe>
       <!--
       <img src="images/laku.jpeg" alt="Static Display" style="max-width: 100%; max-height: 100%;" />
       -->
