@@ -1,238 +1,199 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Data Display Page</title>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weather Sites</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0.5rem;
+    background: #f0f0f0;
+  }
 
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      display: flex;
+  h1, h2 {
+    text-align: center;
+  }
+
+  #top-text, #bottom-text {
+    padding: 1rem;
+    text-align: center;
+  }
+
+  .site-card {
+    background: white;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .site-main {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+
+  .left-column {
+    flex: 1 1 200px;
+    margin-right: 1rem;
+  }
+
+  .site-name {
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .obs-temp {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+
+  .forecast {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: flex-start;
+  }
+
+  .forecast-item {
+    background: #e0e0e0;
+    border-radius: 4px;
+    padding: 0.5rem;
+    flex: 1 1 60px;
+    text-align: center;
+  }
+
+  #image-section {
+    margin: 1rem 0;
+    text-align: center;
+  }
+
+  img {
+    max-width: 100%;
+    border-radius: 8px;
+  }
+
+  @media(max-width: 600px){
+    .site-main {
       flex-direction: column;
-      min-height: 100vh;
     }
-
-    .top-section {
-      padding: 1.5em;
-      background-color: #f0f0f0;
+    .left-column {
+      margin-right: 0;
+      margin-bottom: 1rem;
     }
-
-    .middle-section {
-      flex: 0 1 auto;
-      padding: 1.5em;
-      background-color: #ffffff;
-      overflow-x: auto;
+    .forecast-item {
+      flex: 1 1 40%;
     }
-
-    .bottom-section {
-      padding: 1em;
-      background-color: #e8e8e8;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    /* Aspect-ratio wrapper for iframe or image */
-    .aspect-ratio-box {
-      position: relative;
-      width: 100%;
-      max-width: 1000px;
-      aspect-ratio: 4 / 3;
-    }
-
-    .aspect-ratio-box iframe,
-    .aspect-ratio-box img {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      border: none;
-      object-fit: cover;
-    }
-
-
-    /* Table styling */
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-      font-size: 0.9em;
-    }
-
-    th, td {
-      padding: 0.5em;
-      border: 1px solid #ccc;
-      text-align: left;
-    }
-
-    th {
-      background-color: #f9f9f9;
-    }
-
-    /* Responsive tweaks for narrow screens */
-    @media (max-width: 768px) {
-      .top-section, .middle-section, .bottom-section {
-        padding: 1em;
-      }
-
-      table {
-        font-size: 0.85em;
-      }
-
-      .bottom-section iframe,
-      .bottom-section img {
-        height: 200px;
-      }
-    }
-  </style>
+  }
+</style>
 </head>
 <body>
 
-  <div class="top-section">
-    <h1>Project Testing: WIP</h1>
-    <p>Basic information will be here, updated</p>
-  </div>
+<div id="top-text">
+  <h1>Welcome to Weather Dashboard</h1>
+  <p>Check current observations and forecasts for Helsinki area sites.</p>
+</div>
 
-  <div class="middle-section" id="data-container">
-    <!-- Dynamic content table will be injected here -->
-  </div>
+<div id="sites-container"></div>
 
-  <div class="bottom-section">
-    <div class="aspect-ratio-box">
-      <iframe src="https://www.google.com/maps/d/embed?mid=1ZgMYT1t2DT6gvK9IAVQ6z11GeNMK4s4&ehbc=2E312F" width="640" height="480"></iframe>
-    </div>
-     <!--
-      <iframe src="https://www.google.com/maps/d/embed?mid=1heOFnKgYLi9tWZ3-ihJM076qHRD94iU&ehbc=2E312F" width="640" height="480"></iframe> 
-      <img src="images/laku.jpeg" alt="Static Display" style="max-width: 100%; max-height: 100%;" />
-      -->
-  </div>
+<div id="image-section">
+  <img src="https://via.placeholder.com/600x200?text=Weather+Map" alt="Weather map">
+</div>
+
+<div id="bottom-text">
+  <p>Data provided by MyWeatherService. <a href="#">More info</a></p>
+</div>
 
 <script>
-  const siteMap = {
-    "1270": "Keilaniemi",
-    "1271": "Matinkylä",
-    "1273": "Merituulentie",
-    "1274": "Tapiola",
-    "1277": "Säterinpuisto"
-  };
+const apiUrl = "https://ryaolw225a.execute-api.eu-west-1.amazonaws.com/dev/read";
 
-  const siteIDs = Object.keys(siteMap);
+// Emoji mapping for d4 codes
+const D4_EMOJI_MAP = {
+  600: "❄️", 
+  601: "🌨️", 
+  602: "🌨️", 
+  603: "🌧️", 
+  604: "⛈️", 
+  6010: "🌨️", 
+  6001: "🌨️",
+};
 
-  const apiBaseUrl = 'https://ypz15mr9e8.execute-api.eu-west-1.amazonaws.com/dev/read';
-  const apiKey = 'uwGUXamNWM7SPb6MDK7cb5Kf85BIQ0o41sOAVAnc';
+// Format timestamp to Helsinki local time, rounded to nearest 10 min
+function formatObsTime(ts) {
+  if (!ts) return "N/A";
+  const date = new Date(ts*1000);
+  date.setMinutes(Math.round(date.getMinutes()/10)*10);
+  return date.toLocaleTimeString('fi-FI', {hour:'2-digit', minute:'2-digit'});
+}
 
-  function formatDateTime2(input, timeZone = 'Europe/Helsinki') {
-    let date;
+function buildForecastItem(f) {
+  const emoji = f.d26 != null ? (D4_EMOJI_MAP[f.d26] || f.d26) : "N/A";
+  const hour = new Date(f.ts*1000).getHours().toString().padStart(2,'0');
+  return `<div class="forecast-item">
+            ${hour}h<br>
+            ${f.d1 != null ? f.d1+'°C' : 'N/A'}<br>
+            ${emoji}<br>
+            ${f.d28 != null ? f.d28 : 'N/A'}<br>
+            ${f.d4 != null ? (D4_EMOJI_MAP[f.d4] || f.d4) : 'N/A'}
+          </div>`;
+}
 
-    if (typeof input === 'string' && input.includes('T')) {
-      // ISO 8601 format (e.g., FetchedAt)
-      date = new Date(input);
-    } else if (!isNaN(input)) {
-      // Numeric timestamp (likely in seconds)
-      const timestamp = Number(input);
-      date = new Date(timestamp < 1e12 ? timestamp * 1000 : timestamp); // adjust if in seconds
-    } else {
-      return 'Invalid time';
+function buildSiteCard(site, index) {
+  const obs = site.observation || {};
+  const obsD1 = obs.d1 != null ? obs.d1+'°C' : "N/A";
+  const obsD4 = obs.d4 != null ? (D4_EMOJI_MAP[obs.d4] || obs.d4) : "N/A";
+  const obsD12 = obs.d12 != null ? obs.d12+'°C' : "N/A";
+  const obsD26 = obs.d26 != null ? (D4_EMOJI_MAP[obs.d26] || obs.d26) : "N/A";
+  const obsTime = formatObsTime(obs.ts);
+
+  const forecastsHtml = (site.forecasts || []).map(buildForecastItem).join("");
+
+  return `
+    <div class="site-card">
+      <div class="site-main">
+        <div class="left-column">
+          <div>${index+1}. <span class="site-name">${site.site_name}</span></div>
+          <div>Road: ${obsD4} / ${obsD12}</div>
+          <div class="obs-temp">${obsD26} ${obsD1}</div>
+          <div>Obs: ${obsTime}</div>
+        </div>
+        <div class="forecast">
+          ${forecastsHtml}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+async function loadSites() {
+  const container = document.getElementById("sites-container");
+  try {
+    const response = await fetch(apiUrl, {
+      headers: { "x-api-key": "uwGUXamNWM7SPb6MDK7cb5Kf85BIQ0o41sOAVAnc" }
+    });
+
+    const raw = await response.json();
+
+    if (!raw.sites || !Array.isArray(raw.sites)) {
+      console.error("Unexpected API shape:", raw);
+      container.innerHTML = "<p>Error: Unexpected data from API</p>";
+      return;
     }
 
-    return date.toLocaleString('en-GB', {
-      timeZone,
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+    container.innerHTML = raw.sites.map(buildSiteCard).join("");
+  } catch(err) {
+    console.error("Error loading sites:", err);
+    container.innerHTML = "<p>Error loading sites</p>";
   }
+}
 
-
-
-
-  function formatDateTime(isoString, timeZone = 'Europe/Helsinki') {
-    const date = new Date(isoString);
-    return date.toLocaleString('en-GB', {
-      timeZone,
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  }
-
-  function round(value) {
-    return typeof value === 'number' ? Math.round(value) : value;
-  }
-
-  async function fetchSiteData(siteID) {
-    const url = `${apiBaseUrl}?SiteID=${siteID}`;
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey
-      }
-    });
-
-    const data = await response.json();
-    return data[0];
-  }
-
-  async function fetchAllSites() {
-    const allData = [];
-
-    for (const siteID of siteIDs) {
-      try {
-        const data = await fetchSiteData(siteID);
-        allData.push(data);
-      } catch (error) {
-        console.error(`Failed to load data for SiteID ${siteID}:`, error);
-      }
-    }
-
-    return allData;
-  }
-
-  function renderTable(dataArray) {
-    const columns = [
-      { key: 'SiteID', label: 'Site Name', transform: (val) => siteMap[val] || val },
-      { key: 'ForecastTime', label: 'Forecast Time', transform: (val) => formatDateTime2(val) },
-      { key: 'd4', label: 'Road Condition Code', transform: round },
-      { key: 'd1', label: 'Air Temperature', transform: round },
-      { key: 'd5', label: 'Road Temperature', transform: round },
-      { key: 'd10', label: 'Humidity', transform: round },
-      { key: 'd18', label: 'Water layer', transform: round }
-    ];
-
-    let tableHTML = `<table>
-      <thead><tr>${columns.map(col => `<th>${col.label}</th>`).join('')}</tr></thead>
-      <tbody>
-        ${dataArray.map(site => `
-          <tr>
-            ${columns.map(col => {
-              const raw = site[col.key];
-              const display = col.transform ? col.transform(raw) : raw;
-              return `<td>${display != null ? display : '-'}</td>`;
-            }).join('')}
-          </tr>
-        `).join('')}
-      </tbody>
-    </table>`;
-
-    document.getElementById('data-container').innerHTML = tableHTML;
-  }
-
-  // Load and render data
-  fetchAllSites().then(renderTable);
+window.addEventListener("DOMContentLoaded", loadSites);
 </script>
-
-
 
 </body>
 </html>
