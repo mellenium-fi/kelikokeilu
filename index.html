@@ -48,8 +48,25 @@
     margin-bottom: 0.5rem;
   }
 
+  .site-row {
+    display: flex;
+    gap: 0.5rem; /* small separation between left and right */
+    align-items: flex-start;
+  }
+
+  .site-left {
+    flex: 0 0 auto; /* shrink to fit content */
+  }
+
+  .site-right {
+    flex: 1; /* take remaining space */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.0rem;
+  }
+
   .obs-temp {
-    font-size: 1.5rem;
+    font-size: 2.5rem;
     font-weight: bold;
   }
 
@@ -95,18 +112,24 @@
 <body>
 
 <div id="top-text">
-  <h1>Welcome to Weather Dashboard</h1>
-  <p>Check current observations and forecasts for Helsinki area sites.</p>
+  <h1>Pyöräilysää Espoossa</h1>
+  <p>Tämä palveluu on Tulevaisuuden kestävät kaupunginosat -projektin kokeilu. 
+  Kokeilu on toteutettu yhteistyössä Espoon kaupungin, Mellenium Oy:n ja AS Teede Tehnokeskuksen kanssa.</p>
 </div>
 
 <div id="sites-container"></div>
 
 <div id="image-section">
-  <img src="https://via.placeholder.com/600x200?text=Weather+Map" alt="Weather map">
+  <!-- <img src="https://via.placeholder.com/600x200?text=Weather+Map" alt="Weather map"> -->
+  <div class="aspect-ratio-box">
+    <iframe src="https://www.google.com/maps/d/embed?mid=1ZgMYT1t2DT6gvK9IAVQ6z11GeNMK4s4&ehbc=2E312F" width="640" height="480"></iframe>
+  </div>
 </div>
 
+
+
 <div id="bottom-text">
-  <p>Data provided by MyWeatherService. <a href="#">More info</a></p>
+  <p>Anna palautetta <a href="https://www.espoo.fi/fi">Espoo</a></p>
 </div>
 
 <script>
@@ -135,19 +158,20 @@ function buildForecastItem(f) {
   const emoji = f.d26 != null ? (D4_EMOJI_MAP[f.d26] || f.d26) : "N/A";
   const hour = new Date(f.ts*1000).getHours().toString().padStart(2,'0');
   return `<div class="forecast-item">
-            ${hour}h<br>
             ${f.d1 != null ? f.d1+'°C' : 'N/A'}<br>
             ${emoji}<br>
-            ${f.d28 != null ? f.d28 : 'N/A'}<br>
-            ${f.d4 != null ? (D4_EMOJI_MAP[f.d4] || f.d4) : 'N/A'}
+            ${f.d4 != null ? (D4_EMOJI_MAP[f.d4] || f.d4) : 'N/A'}<br>
+            ${hour}
           </div>`;
 }
 
+//         ${f.d28 != null ? f.d28 : 'N/A'}<br>
+
 function buildSiteCard(site, index) {
   const obs = site.observation || {};
-  const obsD1 = obs.d1 != null ? obs.d1+'°C' : "N/A";
+  const obsD1 = obs.d1 != null ? obs.d1 + '°C' : "N/A";
   const obsD4 = obs.d4 != null ? (D4_EMOJI_MAP[obs.d4] || obs.d4) : "N/A";
-  const obsD12 = obs.d12 != null ? obs.d12+'°C' : "N/A";
+  const obsD12 = obs.d12 != null ? obs.d12 + '°C' : "N/A";
   const obsD26 = obs.d26 != null ? (D4_EMOJI_MAP[obs.d26] || obs.d26) : "N/A";
   const obsTime = formatObsTime(obs.ts);
 
@@ -155,14 +179,14 @@ function buildSiteCard(site, index) {
 
   return `
     <div class="site-card">
-      <div class="site-main">
-        <div class="left-column">
-          <div>${index+1}. <span class="site-name">${site.site_name}</span></div>
-          <div>Road: ${obsD4} / ${obsD12}</div>
-          <div class="obs-temp">${obsD26} ${obsD1}</div>
-          <div>Obs: ${obsTime}</div>
+      <div class="site-name">${site.site_name}</div>
+      <div class="site-row">
+        <div class="site-left">
+          Tien tilanne: ${obsD4} ${obsD1}<br>
+          <span class="obs-temp">${obsD26} ${obsD12}</span><br>
+          Klo: ${obsTime}
         </div>
-        <div class="forecast">
+        <div class="site-right">
           ${forecastsHtml}
         </div>
       </div>
