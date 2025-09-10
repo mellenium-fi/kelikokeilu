@@ -21,6 +21,7 @@
     text-align: center;
   }
 
+  /*
   .site-card {
     background: white;
     border-radius: 8px;
@@ -30,16 +31,33 @@
     display: flex;
     flex-direction: column;
   }
+  */
 
-  .site-main {
+  .site-card {
+    background: white;
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem auto;       /* center the card */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
+    flex-direction: column;
+    max-width: 1000px;        /* limit total width */
+    /*width: fit-content;       shrink to fit content */
   }
 
-  .left-column {
-    flex: 1 1 200px;
-    margin-right: 1rem;
+  .site-row {
+    display: flex;
+    align-items: flex-start;
+  }
+
+  .site-left {
+    flex: 0 0 180px; /* fixed width */
+  }
+
+  .site-right {
+    flex: 1;
+    margin-left: 1rem; /* gap between obs and forecast */
+    overflow-x: auto; /* scrollable on mobile */
   }
 
   .site-name {
@@ -48,41 +66,41 @@
     margin-bottom: 0.5rem;
   }
 
-  .site-row {
-    display: flex;
-    gap: 0.5rem; /* small separation between left and right */
-    align-items: flex-start;
-  }
-
-  .site-left {
-    flex: 0 0 auto; /* shrink to fit content */
-  }
-
-  .site-right {
-    flex: 1; /* take remaining space */
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.0rem;
-  }
-
   .obs-temp {
-    font-size: 2.5rem;
+    font-size: 2rem;
     font-weight: bold;
   }
 
+  /* Forecast as table */
   .forecast {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    justify-content: flex-start;
+    display: table;
+    border-spacing: 0;
+    white-space: nowrap;
+  }
+
+  .forecast-row {
+    display: table-row;
+  }
+
+  .forecast-item, .forecast-time {
+    display: table-cell;
+    text-align: center;
+    padding: 0.4rem;
   }
 
   .forecast-item {
     background: #e0e0e0;
-    border-radius: 4px;
-    padding: 0.5rem;
-    flex: 1 1 60px;
-    text-align: center;
+    border-right: 1px solid white;
+  }
+
+  .forecast-item:last-child {
+    border-right: none;
+  }
+
+  .forecast-time {
+    background: transparent;
+    font-size: 0.9rem;
+    padding-top: 0.2rem;
   }
 
   #image-section {
@@ -94,19 +112,6 @@
     max-width: 100%;
     border-radius: 8px;
   }
-
-  @media(max-width: 600px){
-    .site-main {
-      flex-direction: column;
-    }
-    .left-column {
-      margin-right: 0;
-      margin-bottom: 1rem;
-    }
-    .forecast-item {
-      flex: 1 1 40%;
-    }
-  }
 </style>
 </head>
 <body>
@@ -115,18 +120,16 @@
   <h1>Pyöräilysää Espoossa</h1>
   <p>Tämä palveluu on Tulevaisuuden kestävät kaupunginosat -projektin kokeilu. 
   Kokeilu on toteutettu yhteistyössä Espoon kaupungin, Mellenium Oy:n ja AS Teede Tehnokeskuksen kanssa.</p>
+
 </div>
 
 <div id="sites-container"></div>
 
 <div id="image-section">
-  <!-- <img src="https://via.placeholder.com/600x200?text=Weather+Map" alt="Weather map"> -->
   <div class="aspect-ratio-box">
     <iframe src="https://www.google.com/maps/d/embed?mid=1ZgMYT1t2DT6gvK9IAVQ6z11GeNMK4s4&ehbc=2E312F" width="640" height="480"></iframe>
   </div>
 </div>
-
-
 
 <div id="bottom-text">
   <p>Anna palautetta <a href="https://www.espoo.fi/fi">Espoo</a></p>
@@ -135,18 +138,17 @@
 <script>
 const apiUrl = "https://ryaolw225a.execute-api.eu-west-1.amazonaws.com/dev/read";
 
-// Emoji mapping for d4 codes
 const D4_EMOJI_MAP = {
-  600: "❄️", 
-  601: "🌨️", 
-  602: "🌨️", 
-  603: "🌧️", 
-  604: "⛈️", 
-  6010: "🌨️", 
-  6001: "🌨️",
+  601: "Kuiva", 602: "Märkä", 603: "Luminen", 604: "Loskaa",
+  605: "Kostea", 606: "Loskaa", 607: "Kuuraa", 608: "Jäinen",
+  609: "Kostea", 610: "Kuuraa", 611: "Kostea"
 };
 
-// Format timestamp to Helsinki local time, rounded to nearest 10 min
+const D26_EMOJI_MAP = {
+  600: "❄️", 601: "🌨️", 602: "🌨️", 603: "🌧️",
+  604: "⛈️", 6010: "🌨️", 6001: "🌨️",
+};
+
 function formatObsTime(ts) {
   if (!ts) return "N/A";
   const date = new Date(ts*1000);
@@ -154,40 +156,49 @@ function formatObsTime(ts) {
   return date.toLocaleTimeString('fi-FI', {hour:'2-digit', minute:'2-digit'});
 }
 
-function buildForecastItem(f) {
-  const emoji = f.d26 != null ? (D4_EMOJI_MAP[f.d26] || f.d26) : "N/A";
-  const hour = new Date(f.ts*1000).getHours().toString().padStart(2,'0');
-  return `<div class="forecast-item">
-            ${f.d1 != null ? f.d1+'°C' : 'N/A'}<br>
-            ${emoji}<br>
-            ${f.d4 != null ? (D4_EMOJI_MAP[f.d4] || f.d4) : 'N/A'}<br>
-            ${hour}
-          </div>`;
+function buildForecastCells(forecasts) {
+  const items = forecasts.map(f => {
+    const emoji = f.d26 != null ? (D26_EMOJI_MAP[f.d26] || f.d26) : "N/A";
+    const road = f.d4 != null ? (D4_EMOJI_MAP[f.d4] || f.d4) : "N/A";
+    return `<div class="forecast-item">
+              ${f.d1 != null ? Math.round(f.d1) + '°C' : 'N/A'}<br>
+              ${emoji}<br>
+              ${road}
+            </div>`;
+  }).join("");
+
+  const times = forecasts.map(f => {
+    const hour = new Date(f.ts*1000).getHours().toString().padStart(2,'0');
+    return `<div class="forecast-time">${hour}</div>`;
+  }).join("");
+
+  return `
+    <div class="forecast-row">${items}</div>
+    <div class="forecast-row">${times}</div>
+  `;
 }
 
-//         ${f.d28 != null ? f.d28 : 'N/A'}<br>
-
-function buildSiteCard(site, index) {
+function buildSiteCard(site) {
   const obs = site.observation || {};
   const obsD1 = obs.d1 != null ? obs.d1 + '°C' : "N/A";
   const obsD4 = obs.d4 != null ? (D4_EMOJI_MAP[obs.d4] || obs.d4) : "N/A";
-  const obsD12 = obs.d12 != null ? obs.d12 + '°C' : "N/A";
-  const obsD26 = obs.d26 != null ? (D4_EMOJI_MAP[obs.d26] || obs.d26) : "N/A";
+  const obsD5 = obs.d5 != null ? obs.d5 + '°C' : "N/A";
+  const obsD26 = obs.d26 != null ? (D26_EMOJI_MAP[obs.d26] || obs.d26) : "N/A";
   const obsTime = formatObsTime(obs.ts);
 
-  const forecastsHtml = (site.forecasts || []).map(buildForecastItem).join("");
+  const forecastsHtml = buildForecastCells(site.forecasts || []);
 
   return `
     <div class="site-card">
       <div class="site-name">${site.site_name}</div>
       <div class="site-row">
         <div class="site-left">
-          Tien tilanne: ${obsD4} ${obsD1}<br>
-          <span class="obs-temp">${obsD26} ${obsD12}</span><br>
+          Tienpinta: ${obsD4} ${obsD5}<br>
+          <span class="obs-temp">${obsD26} ${obsD1}</span><br>
           Klo: ${obsTime}
         </div>
         <div class="site-right">
-          ${forecastsHtml}
+          <div class="forecast">${forecastsHtml}</div>
         </div>
       </div>
     </div>
@@ -202,13 +213,11 @@ async function loadSites() {
     });
 
     const raw = await response.json();
-
     if (!raw.sites || !Array.isArray(raw.sites)) {
       console.error("Unexpected API shape:", raw);
       container.innerHTML = "<p>Error: Unexpected data from API</p>";
       return;
     }
-
     container.innerHTML = raw.sites.map(buildSiteCard).join("");
   } catch(err) {
     console.error("Error loading sites:", err);
