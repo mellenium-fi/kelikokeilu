@@ -16,22 +16,16 @@
     text-align: center;
   }
 
-  #top-text, #bottom-text {
-    padding: 1rem;
-    text-align: center;
+  /* Shared container for consistent width */
+  .container {
+    max-width: 1000px;   /* matches site cards */
+    margin: 0 auto;
+    padding: 0 0.5rem;
   }
 
-  /*
-  .site-card {
-    background: white;
-    border-radius: 8px;
-    padding: 1rem;
-    margin-bottom: 1rem;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    display: flex;
-    flex-direction: column;
+  #top-text, #bottom-text, #image-section {
+    text-align: center;
   }
-  */
 
   .site-card {
     background: white;
@@ -42,22 +36,24 @@
     display: flex;
     flex-direction: column;
     max-width: 1000px;        /* limit total width */
-    /*width: fit-content;       shrink to fit content */
   }
 
   .site-row {
     display: flex;
     align-items: flex-start;
+    gap: 1rem;
   }
 
   .site-left {
-    flex: 0 0 180px; /* fixed width */
+    flex: 0 0 auto;    /* shrink to fit content */
+    font-size: 1rem;
+    min-width: 100px;  /* prevents collapse */
   }
 
   .site-right {
     flex: 1;
-    margin-left: 1rem; /* gap between obs and forecast */
-    overflow-x: auto; /* scrollable on mobile */
+    margin-left: 0.5rem;
+    overflow-x: auto;  /* scrollable on mobile if needed */
   }
 
   .site-name {
@@ -103,36 +99,88 @@
     padding-top: 0.2rem;
   }
 
+
   #image-section {
-    margin: 1rem 0;
-    text-align: center;
+    margin: 1rem auto;
+    max-width: 1000px;   /* same as site cards */
   }
 
-  img {
-    max-width: 100%;
+  .aspect-ratio-box {
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%; /* 16:9 ratio → 9 / 16 = 0.5625 */
+    overflow: hidden;
     border-radius: 8px;
+  }
+
+  .aspect-ratio-box iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  /* Mobile adjustments */
+  @media(max-width: 600px){
+    body {
+      font-size: 0.9rem; /* smaller global font */
+    }
+
+    .site-left {
+      font-size: 0.8rem;
+      min-width: 60px;   /* narrower observation column */
+    }
+
+    .obs-temp {
+      font-size: 1.5rem; /* smaller obs temperature */
+    }
+
+    .forecast-item {
+      font-size: 0.8rem;
+      padding: 0.2rem;
+    }
+
+    .forecast-time {
+      font-size: 0.75rem;
+    }
   }
 </style>
 </head>
 <body>
 
-<div id="top-text">
-  <h1>Pyöräilysää Espoossa</h1>
-  <p>Tämä palveluu on Tulevaisuuden kestävät kaupunginosat -projektin kokeilu. 
+
+
+<div class="container">
+  <div id="top-text">
+    <h1>Pyöräilysää Espoossa</h1>
+    <p>Tämä palveluu on Tulevaisuuden kestävät kaupunginosat -projektin kokeilu. 
   Kokeilu on toteutettu yhteistyössä Espoon kaupungin, Mellenium Oy:n ja AS Teede Tehnokeskuksen kanssa.</p>
-
-</div>
-
-<div id="sites-container"></div>
-
-<div id="image-section">
-  <div class="aspect-ratio-box">
-    <iframe src="https://www.google.com/maps/d/embed?mid=1ZgMYT1t2DT6gvK9IAVQ6z11GeNMK4s4&ehbc=2E312F" width="640" height="480"></iframe>
   </div>
-</div>
 
-<div id="bottom-text">
-  <p>Anna palautetta <a href="https://www.espoo.fi/fi">Espoo</a></p>
+  <div id="sites-container"></div>
+
+  <!--
+  <div id="image-section">
+    <div class="aspect-ratio-box">
+      <iframe src="https://www.google.com/maps/d/embed?mid=1ZgMYT1t2DT6gvK9IAVQ6z11GeNMK4s4&ehbc=2E312F"></iframe>
+    </div>
+  </div>
+  -->
+
+  <div id="image-section" class="container">
+    <div class="aspect-ratio-box">
+      <iframe 
+        src="https://www.google.com/maps/d/embed?mid=1ZgMYT1t2DT6gvK9IAVQ6z11GeNMK4s4&ehbc=2E312F"
+        allowfullscreen>
+      </iframe>
+    </div>
+  </div>
+
+  <div id="bottom-text">
+    <p>Anna palautetta <a href="https://www.espoo.fi/fi">Espoo</a></p>
+  </div>
 </div>
 
 <script>
