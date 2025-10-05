@@ -76,10 +76,16 @@
     gap: 1rem;
   }
 
+  /*
   .site-left {
-    flex: 0 0 auto;    /* shrink to fit content */
+    flex: 0 0 auto;
     font-size: 1rem;
-    min-width: 100px;  /* prevents collapse */
+    min-width: 100px;
+  }*/
+
+  .site-left {
+    flex: 0 0 180px; /* fixed width, adjust as needed */
+    font-size: 1rem;
   }
 
   .site-right {
@@ -112,6 +118,7 @@
 
   .forecast-item, .forecast-time {
     display: table-cell;
+    width: 60px;
     text-align: center;
     padding: 0.4rem;
   }
@@ -154,6 +161,13 @@
     border: 0;
   }
 
+  a img {
+    border: none;         /* vanhojen selainten varalta */
+  }
+  a {
+    text-decoration: none; /* poistaa alleviivauksen */
+  }
+
   /* Mobile adjustments */
   @media(max-width: 600px){
     body {
@@ -170,22 +184,24 @@
     }
 
     .site-left {
+      flex: 0 0 80px
       font-size: 0.8rem;
-      min-width: 60px;   /* narrower observation column */
     }
 
     .obs-temp {
-      font-size: 1.5rem; /* smaller obs temperature */
+      font-size: 1.4rem; /* smaller obs temperature */
     }
 
-    .forecast-item {
-      font-size: 0.8rem;
+    .forecast-item, .forecast-time {
+      width: 45px;
+      font-size: 0.75rem;
       padding: 0.2rem;
     }
 
     .forecast-time {
       font-size: 0.75rem;
     }
+
   }
 </style>
 </head>
@@ -204,7 +220,14 @@
         Kestävän tulevaisuuden kaupunginosat -kokeiluohjelmaa
       </a>. 
       Kokeilu on toteutettu yhteistyössä Espoon kaupungin, Mellenium Oy:n ja AS Teede Tehnokeskuksen kanssa.
-    </p> 
+    </p>
+    <p>
+      Anna palautetta ja keskustele Facebookissa:
+      <a href="https://www.facebook.com/profile.php?id=61579623544202" target="_blank">
+        <img src="images/Facebook.png" alt="Facebook" style="width: 24px; height: 24px; vertical-align: middle;">
+      </a>
+      Vikailmoitukset myös: <a href="mailto:info@mellenium.fi">info@mellenium.fi</a>
+    </p>
   </div>
 
   <div id="sites-container"></div>
@@ -218,18 +241,6 @@
     </div>
   </div>
 
-  <div id="bottom-text">
-    <p>
-      Anna palautetta: 
-      <a href="https://easiointi.espoo.fi/efeedback//fi">Espoon palautesivu</a>
-    </p>
-    <p>
-      Seuraa myös Facebookissa:
-      <a href="https://www.facebook.com/profile.php?id=61579623544202" target="_blank">
-        <img src="images/Facebook.png" alt="Facebook" style="width: 24px; height: 24px; vertical-align: middle;">
-      </a>
-    </p>
-  </div>
 </div>
 
 
@@ -259,7 +270,7 @@ const D26_EMOJI_MAP = {
   6020: "🌨️",	
   6022: "🌨️",
   6023: "🌧️",
-  6024: "🌧️🌧️",
+  6024: "🌧️",
   6025: "⛈️🌧️",
   6026: "🌨️",
   6027: "❄️",
