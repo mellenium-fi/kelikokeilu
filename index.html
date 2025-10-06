@@ -55,9 +55,6 @@
     }
   }
 
-  #bottom-text, #image-section {
-    text-align: center;
-  }
 
   .site-card {
     background: white;
@@ -75,13 +72,6 @@
     align-items: flex-start;
     gap: 1rem;
   }
-
-  /*
-  .site-left {
-    flex: 0 0 auto;
-    font-size: 1rem;
-    min-width: 100px;
-  }*/
 
   .site-left {
     flex: 0 0 180px; /* fixed width, adjust as needed */
@@ -103,6 +93,10 @@
   .obs-temp {
     font-size: 2rem;
     font-weight: bold;
+  }
+
+  .obs-mobile-break {
+    display: inline;
   }
 
   /* Forecast as table */
@@ -138,7 +132,6 @@
     padding-top: 0.2rem;
   }
 
-
   #image-section {
     margin: 1rem auto;
     max-width: 1000px;   /* same as site cards */
@@ -147,7 +140,7 @@
   .aspect-ratio-box {
     position: relative;
     width: 100%;
-    padding-top: 56.25%; /* 16:9 ratio → 9 / 16 = 0.5625 */
+    padding-top: 56.25%;
     overflow: hidden;
     border-radius: 8px;
   }
@@ -162,10 +155,10 @@
   }
 
   a img {
-    border: none;         /* vanhojen selainten varalta */
+    border: none;       
   }
   a {
-    text-decoration: none; /* poistaa alleviivauksen */
+    text-decoration: none;
   }
 
   /* Mobile adjustments */
@@ -184,12 +177,16 @@
     }
 
     .site-left {
-      flex: 0 0 80px
+      flex: 0 0 100px;
       font-size: 0.8rem;
     }
 
+    .obs-mobile-break {
+      display: block;
+    }
+
     .obs-temp {
-      font-size: 1.4rem; /* smaller obs temperature */
+      font-size: 1.3rem; 
     }
 
     .forecast-item, .forecast-time {
@@ -362,7 +359,7 @@ function buildSiteCard(site) {
       <div class="site-name">${site.site_name}</div>
       <div class="site-row">
         <div class="site-left">
-          Tienpinta: ${obsD4} ${obsD5}<br>
+          Tienpinta: <span class="obs-mobile-break">${obsD4} ${obsD5}</span>
           <span class="obs-temp">${obsD26} ${obsD1}</span><br>
           Klo: ${obsTime}
         </div>
