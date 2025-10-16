@@ -244,7 +244,7 @@
 const apiUrl = "https://ryaolw225a.execute-api.eu-west-1.amazonaws.com/dev/read";
 
 const D4_EMOJI_MAP = {
-  601: "Kuiva", 602: "Märkä", 603: "Lunta", 604: "Loskaa",
+  601: "Kuiva", 602: "Märkä", 603: "jää/lumi", 604: "Loskaa",
   605: "Kostea", 606: "Loskaa", 607: "Kuuraa", 608: "Jäinen",
   609: "Kostea", 610: "Kuuraa", 611: "Kostea", 999: "---"
 };
@@ -347,7 +347,7 @@ function buildForecastCells(forecasts) {
 function buildSiteCard(site) {
   const obs = site.observation || {};
 
-  let obsD4 = "huollossa";
+  let obsD4 = "Huollossa";
   let obsD5 = "";
   if (obs.d4 != null && obs.d5 != null) {
     obsD4 = obs.d4 != null ? (D4_EMOJI_MAP[obs.d4] || obs.d4) : "N/A";
