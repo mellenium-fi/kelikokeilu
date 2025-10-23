@@ -327,7 +327,7 @@ function buildForecastCells(forecasts) {
     //const road = f.d4 != null ? (D4_EMOJI_MAP[f.d4] || f.d4) : "N/A";
     const road = f.d4 != null ? (D4_EMOJI_MAP[f.d4] || f.d4) : D4_EMOJI_MAP[999];
     return `<div class="forecast-item">
-              ${f.d1 != null ? Math.round(f.d1) + '°C' : 'N/A'}<br>
+              ${f.d1 != null ? Math.round(f.d1) + ' °C' : 'N/A'}<br>
               ${emoji}<br>
               ${road}
             </div>`;
@@ -351,9 +351,9 @@ function buildSiteCard(site) {
   let obsD5 = "";
   if (obs.d4 != null && obs.d5 != null) {
     obsD4 = obs.d4 != null ? (D4_EMOJI_MAP[obs.d4] || obs.d4) : "N/A";
-    obsD5 = obs.d5 != null ? obs.d5 + '°C' : "N/A";
+    obsD5 = obs.d5 != null ? obs.d5 + ' °C' : "N/A";
   }
-  const obsD1 = obs.d1 != null ? obs.d1 + '°C' : "N/A";
+  const obsD1 = obs.d1 != null ? obs.d1 + ' °C' : "N/A";
   const obsD26 = obs.d26 != null ? (D26_EMOJI_MAP[obs.d26] || obs.d26) : "N/A";
   const obsTime = formatObsTime(obs.ts);
 
