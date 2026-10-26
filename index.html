@@ -209,15 +209,22 @@
     <div class="title-row">
       <h1>Pyöräilysää Espoossa</h1>
 
+      <!--
       <img src="images/logos.png" alt="Logos" class="title-logo">
+      -->
     </div>
-    <h1>Kokeilu on päättynyt keväällä 2026</h1>
+    <!-- <h1>Kokeilu on päättynyt keväällä 2026</h1> -->
+    <!--
     <p>
       Tämä palvelu on osa 
       <a href="https://www.espoo.fi/fi/kestavan-tulevaisuuden-kaupunginosat-kokeiluohjelma">
         Kestävän tulevaisuuden kaupunginosat -kokeiluohjelmaa
       </a>. 
       Kokeilu on toteutettu yhteistyössä Espoon kaupungin, Mellenium Oy:n ja AS Teede Tehnokeskuksen kanssa.
+    </p>
+    -->
+    <p>
+      Tämä kokeilu on toteutettu yhteistyössä Espoon kaupungin, Mellenium Oy:n ja AS Teede Tehnokeskuksen kanssa.
     </p>
     <p>
       Anna palautetta ja keskustele Facebookissa:
@@ -228,9 +235,9 @@
     </p>
   </div>
 
-  <!--
+  <!-- -->
   <div id="sites-container"></div>
-  -->
+  
 
   <div id="image-section">
     <div class="aspect-ratio-box">
@@ -254,7 +261,125 @@ const D4_EMOJI_MAP = {
   609: "Kostea", 610: "Kuuraa", 611: "Kostea", 999: "---"
 };
 
+
 const D26_EMOJI_MAP = {
+  // --- Sweden 251–277 ---
+  251: "☀️",     // Clear sky
+  252: "🌤️",    // Nearly clear sky
+  253: "⛅",     // Variable cloudiness
+  254: "⛅",     // Halfclear sky
+  255: "☁️",     // Cloudy sky
+  256: "☁️",     // Overcast
+  257: "🌫️",    // Fog
+  258: "🌦️",    // Rain showers
+  259: "🌦️",    // Rain showers
+  260: "🌦️",    // Rain showers
+  261: "⛈️",     // Thunderstorm
+  262: "🌨️",    // Sleet
+  263: "🌨️",    // Sleet
+  264: "🌨️",    // Sleet
+  265: "❄️",     // Snowfall
+  266: "❄️",     // Snowfall
+  267: "❄️",     // Snowfall
+  268: "🌧️",    // Rain
+  269: "🌧️",    // Rain
+  270: "🌧️",    // Rain
+  271: "⛈️",     // Thunder
+  272: "🌨️",    // Light sleet
+  273: "🌨️",    // Sleet
+  274: "🌨️",    // Sleet
+  275: "❄️",     // Snowfall
+  276: "❄️",     // Snowfall
+  277: "❄️",     // Snowfall
+ 
+  // --- Sweden 351–377 ---
+  351: "☀️",     // Clear sky
+  352: "🌤️",    // Nearly clear sky
+  353: "⛅",     // Variable cloudiness
+  354: "⛅",     // Halfclear sky
+  355: "☁️",     // Cloudy sky
+  356: "☁️",     // Overcast
+  357: "🌫️",    // Fog
+  358: "🌦️",    // Rain showers
+  359: "🌦️",    // Rain showers
+  360: "🌦️",    // Rain showers
+  361: "⛈️",     // Thunderstorm
+  362: "🌨️",    // Sleet
+  363: "🌨️",    // Sleet
+  364: "🌨️",    // Sleet
+  365: "❄️",     // Snowfall
+  366: "❄️",     // Snowfall
+  367: "❄️",     // Snowfall
+  368: "🌧️",    // Rain
+  369: "🌧️",    // Rain
+  370: "🌧️",    // Rain
+  371: "⛈️",     // Thunder
+  372: "🌨️",    // Light sleet
+  373: "🌨️",    // Sleet
+  374: "🌨️",    // Sleet
+  375: "❄️",     // Snowfall
+  376: "❄️",     // Snowfall
+  377: "❄️",     // Snowfall
+ 
+  // --- Sweden 5001–5027 ---
+  5001: "☀️",    // Clear sky
+  5002: "🌤️",   // Nearly clear sky
+  5003: "⛅",    // Variable cloudiness
+  5004: "⛅",    // Halfclear sky
+  5005: "☁️",    // Overcast
+  5006: "🌨️",   // Snow showers
+  5007: "🌨️",   // Snow showers
+  5008: "🌨️",   // Snow showers
+  5009: "🌧️",   // Rain
+  5010: "🌧️",   // Rain
+  5011: "🌧️",   // Rain
+  5012: "🌧️",   // Rain
+  5013: "🌧️",   // Rain
+  5014: "🌧️",   // Rain
+  5015: "🌨️",   // Sleet
+  5016: "🌨️",   // Light sleet
+  5017: "🌨️",   // Sleet
+  5018: "❄️",    // Snowfall
+  5019: "❄️",    // Snowfall
+  5020: "❄️",    // Snowfall
+  5021: "❄️",    // Snowfall
+  5022: "❄️",    // Snowfall
+  5023: "🌨️",   // Sleet
+  5024: "🌫️",   // Fog
+  5025: "🌫️",   // Fog
+  5026: "⛈️",    // Thunder
+  5027: "⛈️",    // Thunderstorm
+ 
+  // --- Sweden 5101–5127 ---
+  5101: "☀️",    // Clear sky
+  5102: "🌤️",   // Nearly clear sky
+  5103: "⛅",    // Variable cloudiness
+  5104: "⛅",    // Halfclear sky
+  5105: "☁️",    // Overcast
+  5106: "🌨️",   // Snow showers
+  5107: "🌨️",   // Snow showers
+  5108: "🌨️",   // Snow showers
+  5109: "🌧️",   // Rain
+  5110: "🌧️",   // Rain
+  5111: "🌧️",   // Rain
+  5112: "🌧️",   // Rain
+  5113: "🌧️",   // Rain
+  5114: "🌧️",   // Rain
+  5115: "🌨️",   // Sleet
+  5116: "🌨️",   // Light sleet
+  5117: "🌨️",   // Sleet
+  5118: "❄️",    // Snowfall
+  5119: "❄️",    // Snowfall
+  5120: "❄️",    // Snowfall
+  5121: "❄️",    // Snowfall
+  5122: "❄️",    // Snowfall
+  5123: "🌨️",   // Sleet
+  5124: "🌫️",   // Fog
+  5125: "🌫️",   // Fog
+  5126: "⛈️",    // Thunder
+  5127: "⛈️",    // Thunderstorm
+ 
+  // --- Norway 6001–6083 (unchanged) ---
   6001: "☀️",
   6003: "☀️",
   6004: "🌤️",
@@ -268,7 +393,7 @@ const D26_EMOJI_MAP = {
   6016: "⛈️",
   6017: "🌨️",
   6019: "🌨️",
-  6020: "🌨️",	
+  6020: "🌨️",
   6022: "🌨️",
   6023: "🌧️",
   6024: "🌧️",
@@ -318,6 +443,7 @@ const D26_EMOJI_MAP = {
   6082: "❄️",
   6083: "❄️❄️"
 };
+
 
 function formatObsTime(ts) {
   if (!ts) return "N/A";
